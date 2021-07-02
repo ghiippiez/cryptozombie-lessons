@@ -5,7 +5,7 @@ material:
   editor:
     language: sol
     startingCode: |
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
       contract ZombieFactory {
 
@@ -21,7 +21,7 @@ material:
 
       }
     answer: >
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
 
       contract ZombieFactory {
@@ -66,7 +66,7 @@ You can declare an array as `public`, and Solidity will automatically create a *
 Person[] public people;
 ```
 
-Other contracts would then be able to read (but not write) to this array. So this is a useful pattern for storing public data in your contract.
+Other contracts would then be able to read from, but not write to, this array. So this is a useful pattern for storing public data in your contract.
 
 # Put it to the test
 

@@ -5,7 +5,7 @@ material:
   editor:
     language: sol
     startingCode: |
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
       contract ZombieFactory {
 
@@ -19,13 +19,13 @@ material:
 
           Zombie[] public zombies;
 
-          function createZombie(string _name, uint _dna) {
+          function createZombie(string memory _name, uint _dna) public {
               zombies.push(Zombie(_name, _dna));
           }
 
       }
     answer: >
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
 
       contract ZombieFactory {
@@ -40,7 +40,7 @@ material:
 
           Zombie[] public zombies;
 
-          function _createZombie(string _name, uint _dna) private {
+          function _createZombie(string memory _name, uint _dna) private {
               zombies.push(Zombie(_name, _dna));
           }
 
@@ -49,7 +49,7 @@ material:
 
 In Solidity, functions are `public` by default. This means anyone (or any other contract) can call your contract's function and execute its code.
 
-Obviously this isn't always desireable, and can make your contract vulnerable to attacks. Thus it's good practice to mark your functions as `private` by default, and then only make `public` the functions you want to expose to the world.
+Obviously this isn't always desirable, and can make your contract vulnerable to attacks. Thus it's good practice to mark your functions as `private` by default, and then only make `public` the functions you want to expose to the world.
 
 Let's look at how to declare a private function:
 
@@ -57,7 +57,7 @@ Let's look at how to declare a private function:
 uint[] numbers;
 
 function _addToArray(uint _number) private {
-  numbers.push(_number) {
+  numbers.push(_number);
 }
 ```
 

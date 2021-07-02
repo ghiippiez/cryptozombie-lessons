@@ -57,13 +57,13 @@ Vejamos como declarar uma função privada:
 uint[] numbers;
 
 function _addToArray(uint _number) private {
-  numbers.push(_number) {
+  numbers.push(_number);
 }
 ```
 
 Isso quer dizer que somente as funções em nosso próprio contrato podem chamar a função e adicionar ao array `numbers`.
 
-Como você pode ver, usarmos a palavra reservada `private` após o nome da função. E assim como os parâmetros da função, a convenção é começar os nomes das funções privadas com sublinhado (`_`).
+Como você pode ver, usamos a palavra reservada `private` após o nome da função. E assim como os parâmetros da função, a convenção é começar os nomes das funções privadas com sublinhado (`_`).
 
 # Vamos testar
 

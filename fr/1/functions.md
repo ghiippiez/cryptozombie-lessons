@@ -13,8 +13,8 @@ material:
           uint dnaModulus = 10 ** dnaDigits;
 
           struct Zombie {
-              uint dna;
               string name;
+              uint dna;
           }
 
           Zombie[] public zombies;
@@ -32,8 +32,8 @@ material:
           uint dnaModulus = 10 ** dnaDigits;
 
           struct Zombie {
-              uint dna;
               string name;
+              uint dna;
           }
 
           Zombie[] public zombies;
@@ -45,7 +45,7 @@ material:
       }
 ---
 
-Une déclaration de fonction en Solidity ressemble à ça :
+Une déclaration de fonction (function) en Solidity ressemble à ça :
 
 ```
 function eatHamburgers(string _name, uint _amount) {
@@ -54,7 +54,7 @@ function eatHamburgers(string _name, uint _amount) {
 ```
 C'est une fonction appelée `eatHamburgers` qui prend 2 paramètres : un `string` et un `uint`. Le corps de la fonction est vide pour l'instant.
 
-> Remarque: Par convention (mais ce n'est pas obligatoire), les noms des arguments des fonctions commencent avec un trait de soulignement (`_`) afin de les différencier des variables globales. Nous utiliserons cette convention tout au long de notre tutoriel.
+> Remarque: Par convention (mais ce n'est pas obligatoire), les noms des paramètres des fonctions commencent avec un trait de soulignement (`_`) afin de les différencier des variables globales. Nous utiliserons cette convention tout au long de notre tutoriel.
 
 Vous pouvez appeler la fonction comme cela :
 
@@ -66,6 +66,6 @@ eatHamburgers("vitalik", 100);
 
 Dans notre application, nous allons avoir besoin de créer des zombies. Pour cela, créons une fonction.
 
-1. Créez une fonction appelée `createZombie`. Elle devra prendre deux arguments : **__name_** (un `string`), et **__dna_** (un `uint`).
+1. Créez une fonction appelée `createZombie`. Elle devra prendre deux arguments : **\_name** (un `string`), et **\_dna** (un `uint`).
 
 Laissez le corps vide pour l'instant, nous le compléterons plus tard.

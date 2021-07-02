@@ -7,13 +7,15 @@ material:
     language: sol
     startingCode:
       "zombieattack.sol": |
+        pragma solidity >=0.5.0 <0.6.0;
+
         import "./zombiehelper.sol";
 
-        contract ZombieBattle is ZombieHelper {
+        contract ZombieAttack is ZombieHelper {
           // Start here
         }
       "zombiehelper.sol": |
-        pragma solidity ^0.4.19;
+        pragma solidity >=0.5.0 <0.6.0;
 
         import "./zombiefeeding.sol";
 
@@ -27,7 +29,8 @@ material:
           }
 
           function withdraw() external onlyOwner {
-            owner.transfer(this.balance);
+            address payable _owner = address(uint160(owner()));
+            _owner.transfer(address(this).balance);
           }
 
           function setLevelUpFee(uint _fee) external onlyOwner {
@@ -39,7 +42,7 @@ material:
             zombies[_zombieId].level++;
           }
 
-          function changeName(uint _zombieId, string _newName) external aboveLevel(2, _zombieId) {
+          function changeName(uint _zombieId, string calldata _newName) external aboveLevel(2, _zombieId) {
             require(msg.sender == zombieToOwner[_zombieId]);
             zombies[_zombieId].name = _newName;
           }
@@ -49,7 +52,7 @@ material:
             zombies[_zombieId].dna = _newDna;
           }
 
-          function getZombiesByOwner(address _owner) external view returns(uint[]) {
+          function getZombiesByOwner(address _owner) external view returns(uint[] memory) {
             uint[] memory result = new uint[](ownerZombieCount[_owner]);
             uint counter = 0;
             for (uint i = 0; i < zombies.length; i++) {
@@ -63,7 +66,7 @@ material:
 
         }
       "zombiefeeding.sol": |
-        pragma solidity ^0.4.19;
+        pragma solidity >=0.5.0 <0.6.0;
 
         import "./zombiefactory.sol";
 
@@ -98,13 +101,13 @@ material:
               return (_zombie.readyTime <= now);
           }
 
-          function feedAndMultiply(uint _zombieId, uint _targetDna, string _species) internal {
+          function feedAndMultiply(uint _zombieId, uint _targetDna, string memory _species) internal {
             require(msg.sender == zombieToOwner[_zombieId]);
             Zombie storage myZombie = zombies[_zombieId];
             require(_isReady(myZombie));
             _targetDna = _targetDna % dnaModulus;
             uint newDna = (myZombie.dna + _targetDna) / 2;
-            if (keccak256(_species) == keccak256("kitty")) {
+            if (keccak256(abi.encodePacked(_species)) == keccak256(abi.encodePacked("kitty"))) {
               newDna = newDna - newDna % 100 + 99;
             }
             _createZombie("NoName", newDna);
@@ -118,7 +121,7 @@ material:
           }
         }
       "zombiefactory.sol": |
-        pragma solidity ^0.4.19;
+        pragma solidity >=0.5.0 <0.6.0;
 
         import "./ownable.sol";
 
@@ -142,19 +145,19 @@ material:
             mapping (uint => address) public zombieToOwner;
             mapping (address => uint) ownerZombieCount;
 
-            function _createZombie(string _name, uint _dna) internal {
+            function _createZombie(string memory _name, uint _dna) internal {
                 uint id = zombies.push(Zombie(_name, _dna, 1, uint32(now + cooldownTime))) - 1;
                 zombieToOwner[id] = msg.sender;
                 ownerZombieCount[msg.sender]++;
-                NewZombie(id, _name, _dna);
+                emit NewZombie(id, _name, _dna);
             }
 
-            function _generateRandomDna(string _str) private view returns (uint) {
-                uint rand = uint(keccak256(_str));
+            function _generateRandomDna(string memory _str) private view returns (uint) {
+                uint rand = uint(keccak256(abi.encodePacked(_str)));
                 return rand % dnaModulus;
             }
 
-            function createRandomZombie(string _name) public {
+            function createRandomZombie(string memory _name) public {
                 require(ownerZombieCount[msg.sender] == 0);
                 uint randDna = _generateRandomDna(_name);
                 randDna = randDna - randDna % 100;
@@ -163,54 +166,92 @@ material:
 
         }
       "ownable.sol": |
-        /**
-         * @title Ownable
-         * @dev The Ownable contract has an owner address, and provides basic authorization control
-         * functions, this simplifies the implementation of "user permissions".
-         */
-        contract Ownable {
-          address public owner;
+        pragma solidity >=0.5.0 <0.6.0;
 
-          event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+        /**
+        * @title Ownable
+        * @dev The Ownable contract has an owner address, and provides basic authorization control
+        * functions, this simplifies the implementation of "user permissions".
+        */
+        contract Ownable {
+          address private _owner;
+
+          event OwnershipTransferred(
+            address indexed previousOwner,
+            address indexed newOwner
+          );
 
           /**
-           * @dev The Ownable constructor sets the original `owner` of the contract to the sender
-           * account.
-           */
-          function Ownable() public {
-            owner = msg.sender;
+          * @dev The Ownable constructor sets the original `owner` of the contract to the sender
+          * account.
+          */
+          constructor() internal {
+            _owner = msg.sender;
+            emit OwnershipTransferred(address(0), _owner);
           }
 
+          /**
+          * @return the address of the owner.
+          */
+          function owner() public view returns(address) {
+            return _owner;
+          }
 
           /**
-           * @dev Throws if called by any account other than the owner.
-           */
+          * @dev Throws if called by any account other than the owner.
+          */
           modifier onlyOwner() {
-            require(msg.sender == owner);
+            require(isOwner());
             _;
           }
 
-
           /**
-           * @dev Allows the current owner to transfer control of the contract to a newOwner.
-           * @param newOwner The address to transfer ownership to.
-           */
-          function transferOwnership(address newOwner) public onlyOwner {
-            require(newOwner != address(0));
-            OwnershipTransferred(owner, newOwner);
-            owner = newOwner;
+          * @return true if `msg.sender` is the owner of the contract.
+          */
+          function isOwner() public view returns(bool) {
+            return msg.sender == _owner;
           }
 
+          /**
+          * @dev Allows the current owner to relinquish control of the contract.
+          * @notice Renouncing to ownership will leave the contract without an owner.
+          * It will not be possible to call the functions with the `onlyOwner`
+          * modifier anymore.
+          */
+          function renounceOwnership() public onlyOwner {
+            emit OwnershipTransferred(_owner, address(0));
+            _owner = address(0);
+          }
+
+          /**
+          * @dev Allows the current owner to transfer control of the contract to a newOwner.
+          * @param newOwner The address to transfer ownership to.
+          */
+          function transferOwnership(address newOwner) public onlyOwner {
+            _transferOwnership(newOwner);
+          }
+
+          /**
+          * @dev Transfers control of the contract to a newOwner.
+          * @param newOwner The address to transfer ownership to.
+          */
+          function _transferOwnership(address newOwner) internal {
+            require(newOwner != address(0));
+            emit OwnershipTransferred(_owner, newOwner);
+            _owner = newOwner;
+          }
         }
     answer: >
+      pragma solidity >=0.5.0 <0.6.0;
+
       import "./zombiehelper.sol";
 
-      contract ZombieBattle is ZombieHelper {
+      contract ZombieAttack is ZombieHelper {
         uint randNonce = 0;
 
         function randMod(uint _modulus) internal returns(uint) {
           randNonce++;
-          return uint(keccak256(now, msg.sender, randNonce)) % _modulus;
+          return uint(keccak256(abi.encodePacked(now, msg.sender, randNonce))) % _modulus;
         }
       }
 
@@ -233,14 +274,14 @@ We could do something like the following to generate a random number:
 ```
 // Generate a random number between 1 and 100:
 uint randNonce = 0;
-uint random = uint(keccak256(now, msg.sender, randNonce)) % 100;
+uint random = uint(keccak256(abi.encodePacked(now, msg.sender, randNonce))) % 100;
 randNonce++;
-uint random2 = uint(keccak256(now, msg.sender, randNonce)) % 100;
+uint random2 = uint(keccak256(abi.encodePacked(now, msg.sender, randNonce))) % 100;
 ```
 
-What this would do is take the timestamp of `now`, the `msg.sender`, and an incrementing `nonce` (a number that is only ever used once, so we don't run the same hash function with the same input parameters twice). 
+What this would do is take the timestamp of `now`, the `msg.sender`, and an incrementing `nonce` (a number that is only ever used once, so we don't run the same hash function with the same input parameters twice).
 
-It would then use `keccak` to convert these inputs to a random hash, convert that hash to a `uint`, and then use `% 100` to take only the last 2 digits, giving us a totally random number between 0 and 99.
+It would then "pack" the inputs and use `keccak` to convert them to a random hash. Next, it would convert that hash to a `uint`, and then use `% 100` to take only the last 2 digits. This will give us a totally random number between 0 and 99.
 
 ### This method is vulnerable to attack by a dishonest node
 
@@ -256,7 +297,7 @@ If I were running a node, I could publish a transaction **only to my own node** 
 
 ## So how do we generate random numbers safely in Ethereum?
 
-Because the entire contents of the blockchain are visible to all participants, this is a hard problem, and its solution is beyond the scope of this tutorial. You can read <a href="https://ethereum.stackexchange.com/questions/191/how-can-i-securely-generate-a-random-number-in-my-smart-contract" target=_new>this StackOverflow thread</a> for some ideas. One idea would be to use an **_oracle_** to access a random number function from outside the Ethereum blockchain.
+Because the entire contents of the blockchain are visible to all participants, this is a hard problem, and its solution is beyond the scope of this tutorial. You can read <a href="https://ethereum.stackexchange.com/questions/191/how-can-i-securely-generate-a-random-number-in-my-smart-contract" target=_new>this StackOverflow thread</a> for some ideas. One idea would be to use an **_oracle_** to access a random number function from outside of the Ethereum blockchain.
 
 Of course, since tens of thousands of Ethereum nodes on the network are competing to solve the next block, my odds of solving the next block are extremely low. It would take me a lot of time or computing resources to exploit this profitably — but if the reward were high enough (like if I could bet $100,000,000 on the coin flip function), it would be worth it for me to attack.
 
@@ -276,4 +317,4 @@ Let's implement a random number function we can use to determine the outcome of 
 
 3. The function should first increment `randNonce` (using the syntax `randNonce++`).
 
-4. Finally, it should (in one line of code) calculate the `uint` typecast of the `keccak256` hash of `now`, `msg.sender`, and `randNonce` — and `return` that value `% _modulus`. (Whew! That was a mouthful. If you didn't follow that, just take a look at the example above where we generated a random number — the logic is very similar).
+4. Finally, it should (in one line of code) calculate the `uint` typecast of the `keccak256` hash of `abi.encodePacked(now,msg.sender,randNonce)` — and `return` that value `% _modulus`. (Whew! That was a mouthful. If you didn't follow that, just take a look at the example above where we generated a random number — the logic is very similar).
