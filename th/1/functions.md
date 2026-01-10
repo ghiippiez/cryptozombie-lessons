@@ -13,8 +13,8 @@ material:
           uint dnaModulus = 10 ** dnaDigits;
 
           struct Zombie {
-              uint dna;
               string name;
+              uint dna;
           }
 
           Zombie[] public zombies;
@@ -22,7 +22,7 @@ material:
           // เริ่มตรงนี้
 
       }
-    คำตอบ: >
+    answer: >
       pragma solidity ^0.4.19;
 
 
@@ -32,8 +32,8 @@ material:
           uint dnaModulus = 10 ** dnaDigits;
 
           struct Zombie {
-              uint dna;
               string name;
+              uint dna;
           }
 
           Zombie[] public zombies;
@@ -67,6 +67,6 @@ eatHamburgers("vitalik", 100);
 
 ในแอพพลิเคชั่นของเรานั้นต้องการฟังก์ชั่นที่เอาไว้สร้างซอมบี้ขึ้นมา เราจะมาสร้างฟังก์ชั่นนี้กัน
 
-1.	สร้างฟังก์ชั่นขึ้นโดยใช้ชื่อว่า `createZombie`  โดยควรสามารถรับตัวแปรได้ดังนี้ **__name_** (เป็น `string`) และ **__dna_** (เป็น `uint`) 
+1.	สร้างฟังก์ชั่นขึ้นโดยใช้ชื่อว่า `createZombie`  โดยควรสามารถรับตัวแปรได้ดังนี้ **\_name** (เป็น `string`) และ **\_dna** (เป็น `uint`) 
 
 และปล่อยส่วน body ของฟังก์ชั่นให้ว่างไปก่อนเพราะเราจะมาเขียนในภายหลัง

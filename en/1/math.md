@@ -1,11 +1,12 @@
 ---
 title: Math Operations
 actions: ['checkAnswer', 'hints']
+requireLogin: true
 material:
   editor:
     language: sol
     startingCode: |
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
       contract ZombieFactory {
 
@@ -14,7 +15,7 @@ material:
 
       }
     answer: >
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
 
       contract ZombieFactory {
@@ -32,7 +33,7 @@ Math in Solidity is pretty straightforward. The following operations are the sam
 * Subtraction: `x - y`,
 * Multiplication: `x * y`
 * Division: `x / y`
-* Modulus / remainder: `x % y` _(for example, `13 % 5` is `3`, because if you divide 5 into 13, 3 is the remainder)_
+* Modulus / remainder: `x % y` _(for example, `13 % 5` is `3`, because if you divide 13 into 5, 3 is the remainder)_
 
 Solidity also supports an **_exponential operator_** (i.e. "x to the power of y", x^y):
 

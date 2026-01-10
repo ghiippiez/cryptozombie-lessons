@@ -13,14 +13,14 @@ material:
 
         contract ZombieHelper is ZombieFeeding {
 
-          // 1. Define levelUpFee here
+          // 1. 在这里定义 levelUpFee
 
           modifier aboveLevel(uint _level, uint _zombieId) {
             require(zombies[_zombieId].level >= _level);
             _;
           }
 
-          // 2. Insert levelUp function here
+          // 2. 在这里插入 levelUp 函数 
 
           function changeName(uint _zombieId, string _newName) external aboveLevel(2, _zombieId) {
             require(msg.sender == zombieToOwner[_zombieId]);
@@ -247,11 +247,11 @@ function test() external view onlyOwner anotherModifier { /* ... */ }
 
 ##  `payable` 修饰符
 
-`payable` 方法是让 Solidity 和以太坊变得如此酷的一部分 —— 它们是一种可以接收以太的特殊函数。 
+`payable` 方法是让 Solidity 和以太坊变得如此酷的一部分 —— 它们是一种可以接收以太的特殊函数。
 
 先放一下。当你在调用一个普通网站服务器上的API函数的时候，你无法用你的函数传送美元——你也不能传送比特币。
 
-但是在以太坊中， 因为钱 (_以太_), 数据 (*事务负载*)， 以及合约代码本身都存在于以太坊。你可以在同时调用函数 **并**付钱给另外一个合约。
+但是在以太坊中， 因为钱 (_以太_), 数据 (*交易负载*)， 以及合约代码本身都存在于以太坊。你可以在同时调用函数 **并**付钱给另外一个合约。
 
 这就允许出现很多有趣的逻辑， 比如向一个合约要求支付一定的钱来运行一个函数。
 
@@ -276,12 +276,12 @@ contract OnlineStore {
 OnlineStore.buySomething().send(from: web3.eth.defaultAccount, value: web3.utils.toWei(0.001))
 ```
 
-注意这个 `value` 字段， JavaScript 调用来指定发送多少(0.001)`以太`。如果把事务想象成一个信封，你发送到函数的参数就是信的内容。 添加一个 `value` 很像在信封里面放钱 —— 信件内容和钱同时发送给了接收者。
+注意这个 `value` 字段， JavaScript 调用来指定发送多少(0.001)`以太`。如果把交易想象成一个信封，你发送到函数的参数就是信的内容。 添加一个 `value` 很像在信封里面放钱 —— 信件内容和钱同时发送给了接收者。
 
->注意： 如果一个函数没标记为`payable`， 而你尝试利用上面的方法发送以太，函数将拒绝你的事务。
+>注意： 如果一个函数没标记为`payable`， 而你尝试利用上面的方法发送以太，函数将拒绝你的交易。
 
 
-## 测试一把
+## 实战演习
 
 我们来在僵尸游戏里面创建一个`payable` 函数。
 

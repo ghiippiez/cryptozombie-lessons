@@ -1,12 +1,13 @@
 ---
 title: What Do Zombies Eat?
 actions: ['checkAnswer', 'hints']
+requireLogin: true
 material:
   editor:
     language: sol
     startingCode:
       "zombiefeeding.sol": |
-        pragma solidity ^0.4.19;
+        pragma solidity >=0.5.0 <0.6.0;
 
         import "./zombiefactory.sol";
 
@@ -24,7 +25,7 @@ material:
 
         }
       "zombiefactory.sol": |
-        pragma solidity ^0.4.19;
+        pragma solidity >=0.5.0 <0.6.0;
 
         contract ZombieFactory {
 
@@ -43,19 +44,19 @@ material:
             mapping (uint => address) public zombieToOwner;
             mapping (address => uint) ownerZombieCount;
 
-            function _createZombie(string _name, uint _dna) internal {
+            function _createZombie(string memory _name, uint _dna) internal {
                 uint id = zombies.push(Zombie(_name, _dna)) - 1;
                 zombieToOwner[id] = msg.sender;
                 ownerZombieCount[msg.sender]++;
-                NewZombie(id, _name, _dna);
+                emit NewZombie(id, _name, _dna);
             }
 
-            function _generateRandomDna(string _str) private view returns (uint) {
-                uint rand = uint(keccak256(_str));
+            function _generateRandomDna(string memory _str) private view returns (uint) {
+                uint rand = uint(keccak256(abi.encodePacked(_str)));
                 return rand % dnaModulus;
             }
 
-            function createRandomZombie(string _name) public {
+            function createRandomZombie(string memory _name) public {
                 require(ownerZombieCount[msg.sender] == 0);
                 uint randDna = _generateRandomDna(_name);
                 _createZombie(_name, randDna);
@@ -63,7 +64,7 @@ material:
 
         }
     answer: >
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
       import "./zombiefactory.sol";
 
@@ -129,7 +130,7 @@ contract LuckyNumber {
 
 This would be a simple contract where anyone could store their lucky number, and it will be associated with their Ethereum address. Then anyone else could look up that person's lucky number using their address.
 
-Now let's say we had an external contract that wanted to read the data in this contract using the `getNum` function. 
+Now let's say we had an external contract that wanted to read the data in this contract using the `getNum` function.
 
 First we'd have to define an **_interface_** of the `LuckyNumber` contract:
 
@@ -184,10 +185,10 @@ function getKitty(uint256 _id) external view returns (
 }
 ```
 
-The function looks a bit different than we're used to. You can see it returns... a bunch of different values. If you're coming from a programming language like Javascript, this is different — in Solidity you can return more than one value from a function.
+The function looks a bit different than we're used to. You can see it returns... a bunch of different values. If you're coming from a programming language like JavaScript, this is different — in Solidity you can return more than one value from a function.
 
 Now that we know what this function looks like, we can use it to create an interface:
 
 1. Define an interface called `KittyInterface`. Remember, this looks just like creating a new contract — we use the `contract` keyword.
 
-2. Inside the interface, define the function `getKitty` (which should be a copy/paste of the function above, but with a semi-colon after the `returns` statement, instead of everything inside the curly braces.
+2. Inside the interface, define the function `getKitty` (which should be a copy/paste of the function above, but with a semi-colon after the `returns` statement, instead of everything inside the curly braces).

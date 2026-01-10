@@ -1,11 +1,12 @@
 ---
 title: Msg.sender
 actions: ['checkAnswer', 'hints']
+requireLogin: true
 material:
   editor:
     language: sol
     startingCode: |
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
       contract ZombieFactory {
 
@@ -24,25 +25,25 @@ material:
           mapping (uint => address) public zombieToOwner;
           mapping (address => uint) ownerZombieCount;
 
-          function _createZombie(string _name, uint _dna) private {
+          function _createZombie(string memory _name, uint _dna) private {
               uint id = zombies.push(Zombie(_name, _dna)) - 1;
               // start here
-              NewZombie(id, _name, _dna);
+              emit NewZombie(id, _name, _dna);
           }
 
-          function _generateRandomDna(string _str) private view returns (uint) {
-              uint rand = uint(keccak256(_str));
+          function _generateRandomDna(string memory _str) private view returns (uint) {
+              uint rand = uint(keccak256(abi.encodePacked(_str)));
               return rand % dnaModulus;
           }
 
-          function createRandomZombie(string _name) public {
+          function createRandomZombie(string memory _name) public {
               uint randDna = _generateRandomDna(_name);
               _createZombie(_name, randDna);
           }
 
       }
     answer: >
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
 
       contract ZombieFactory {
@@ -62,19 +63,19 @@ material:
           mapping (uint => address) public zombieToOwner;
           mapping (address => uint) ownerZombieCount;
 
-          function _createZombie(string _name, uint _dna) private {
+          function _createZombie(string memory _name, uint _dna) private {
               uint id = zombies.push(Zombie(_name, _dna)) - 1;
               zombieToOwner[id] = msg.sender;
               ownerZombieCount[msg.sender]++;
-              NewZombie(id, _name, _dna);
+              emit NewZombie(id, _name, _dna);
           }
 
-          function _generateRandomDna(string _str) private view returns (uint) {
-              uint rand = uint(keccak256(_str));
+          function _generateRandomDna(string memory _str) private view returns (uint) {
+              uint rand = uint(keccak256(abi.encodePacked(_str)));
               return rand % dnaModulus;
           }
 
-          function createRandomZombie(string _name) public {
+          function createRandomZombie(string memory _name) public {
               uint randDna = _generateRandomDna(_name);
               _createZombie(_name, randDna);
           }
@@ -120,9 +121,9 @@ Let's update our `_createZombie` method from lesson 1 to assign ownership of the
 
 1. First, after we get back the new zombie's `id`, let's update our `zombieToOwner` mapping to store `msg.sender` under that `id`.
 
-2. Second, let's increase `ownerZombieCount` for this `msg.sender`. 
+2. Second, let's increase `ownerZombieCount` for this `msg.sender`.
 
-In Solidity, you can increase a `uint` with `++`, just like in javascript:
+In Solidity, you can increase a `uint` with `++`, just like in JavaScript:
 
 ```
 uint number = 0;

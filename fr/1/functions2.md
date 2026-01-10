@@ -1,5 +1,5 @@
 ---
-title: Fonctions Privées / Publiques
+title: Fonctions privées / publiques
 actions: ['vérifierLaRéponse', 'indice']
 material:
   editor:
@@ -47,7 +47,7 @@ material:
       }
 ---
 
-En Solidity, les fonctions sont publiques par défaut. Cela signifie que n'importe qui (ou n'importe quel contrat) peut appeler la fonction de votre contrat et exécuter son code.
+En Solidity, les fonctions sont publiques par défaut, ce qui signifie que n'importe qui (ou n'importe quel contrat) peut appeler la fonction de votre contrat et exécuter son code.
 
 Évidemment, ce n'est pas toujours ce que l'on veut, cela pourrait rendre votre contrat vulnérable aux attaques. Il est donc recommandé de marquer vos fonctions comme `private` (privées) par défaut, puis de ne rendre `public` (publiques) seulement les fonctions que vous voulez exposer à tout le monde.
 
@@ -57,7 +57,7 @@ Voici comment déclarer une fonction privée :
 uint[] numbers;
 
 function _addToArray(uint _number) private {
-  numbers.push(_number) {
+  numbers.push(_number);
 }
 ```
 Cela veut dire que seulement les autres fonctions de notre contrat pourront appeler cette fonction et ajouter quelque chose au tableau `array`.

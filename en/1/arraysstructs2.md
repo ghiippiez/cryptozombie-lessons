@@ -1,11 +1,12 @@
 ---
 title: Working With Structs and Arrays
 actions: ['checkAnswer', 'hints']
+requireLogin: true
 material:
   editor:
     language: sol
     startingCode: |
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
       contract ZombieFactory {
 
@@ -19,13 +20,13 @@ material:
 
           Zombie[] public zombies;
 
-          function createZombie(string _name, uint _dna) {
+          function createZombie (string memory _name, uint _dna) public {
               // start here
           }
 
       }
     answer: >
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
 
       contract ZombieFactory {
@@ -40,7 +41,7 @@ material:
 
           Zombie[] public zombies;
 
-          function createZombie(string _name, uint _dna) {
+          function createZombie (string memory _name, uint _dna) public {
               zombies.push(Zombie(_name, _dna));
           }
 
@@ -83,7 +84,7 @@ uint[] numbers;
 numbers.push(5);
 numbers.push(10);
 numbers.push(15);
-// numbers is now equal to [5, 10, 15]
+// The `numbers` array is now equal to [5, 10, 15]
 ```
 
 # Put it to the test

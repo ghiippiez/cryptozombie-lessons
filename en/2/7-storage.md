@@ -1,12 +1,13 @@
 ---
-title: Storage vs Memory
+title: Storage vs Memory (Data location)
 actions: ['checkAnswer', 'hints']
+requireLogin: true
 material:
   editor:
     language: sol
     startingCode:
       "zombiefeeding.sol": |
-        pragma solidity ^0.4.19;
+        pragma solidity >=0.5.0 <0.6.0;
 
         import "./zombiefactory.sol";
 
@@ -16,7 +17,7 @@ material:
 
         }
       "zombiefactory.sol": |
-        pragma solidity ^0.4.19;
+        pragma solidity >=0.5.0 <0.6.0;
 
         contract ZombieFactory {
 
@@ -35,19 +36,19 @@ material:
             mapping (uint => address) public zombieToOwner;
             mapping (address => uint) ownerZombieCount;
 
-            function _createZombie(string _name, uint _dna) private {
+            function _createZombie(string memory _name, uint _dna) private {
                 uint id = zombies.push(Zombie(_name, _dna)) - 1;
                 zombieToOwner[id] = msg.sender;
                 ownerZombieCount[msg.sender]++;
-                NewZombie(id, _name, _dna);
+                emit NewZombie(id, _name, _dna);
             }
 
-            function _generateRandomDna(string _str) private view returns (uint) {
-                uint rand = uint(keccak256(_str));
+            function _generateRandomDna(string memory _str) private view returns (uint) {
+                uint rand = uint(keccak256(abi.encodePacked(_str)));
                 return rand % dnaModulus;
             }
 
-            function createRandomZombie(string _name) public {
+            function createRandomZombie(string memory _name) public {
                 require(ownerZombieCount[msg.sender] == 0);
                 uint randDna = _generateRandomDna(_name);
                 _createZombie(_name, randDna);
@@ -55,7 +56,7 @@ material:
 
         }
     answer: >
-      pragma solidity ^0.4.19;
+      pragma solidity >=0.5.0 <0.6.0;
 
       import "./zombiefactory.sol";
 
@@ -69,7 +70,7 @@ material:
       }
 ---
 
-In Solidity, there are two places you can store variables — in `storage` and in `memory`.
+In Solidity, there are two locations you can store variables — in `storage` and in `memory`.
 
 **_Storage_** refers to variables stored permanently on the blockchain. **_Memory_** variables are temporary, and are erased between external function calls to your contract. Think of it like your computer's hard disk vs RAM.
 
@@ -90,7 +91,7 @@ contract SandwichFactory {
     // Sandwich mySandwich = sandwiches[_index];
 
     // ^ Seems pretty straightforward, but solidity will give you a warning
-    // telling you you should explicitly declare `storage` or `memory` here.
+    // telling you that you should explicitly declare `storage` or `memory` here.
 
     // So instead, you should declare with the `storage` keyword, like:
     Sandwich storage mySandwich = sandwiches[_index];
@@ -101,10 +102,10 @@ contract SandwichFactory {
 
     // If you just want a copy, you can use `memory`:
     Sandwich memory anotherSandwich = sandwiches[_index + 1];
-    // ...in which case `anotherSandwich` will simply be a copy of the 
+    // ...in which case `anotherSandwich` will simply be a copy of the
     // data in memory, and...
     anotherSandwich.status = "Eaten!";
-    // ...will just modify the temporary variable and have no effect 
+    // ...will just modify the temporary variable and have no effect
     // on `sandwiches[_index + 1]`. But you can do this:
     sandwiches[_index + 1] = anotherSandwich;
     // ...if you want to copy the changes back into blockchain storage.
@@ -124,12 +125,12 @@ When a zombie feeds on some other lifeform, its DNA will combine with the other 
 
 1. Create a function called `feedAndMultiply`. It will take two parameters: `_zombieId` (a `uint`) and `_targetDna` (also a `uint`). This function should be `public`.
 
-2. We don't want to let someone else feed using our zombie! So first, let's make sure we own this zombie. Add a `require` statement to make sure `msg.sender` is equal to this zombie's owner (similar to how we did in the `createRandomZombie` function).
+2. We don't want to let someone else feed our zombie! So first, let's make sure we own this zombie. Add a `require` statement to verify that `msg.sender` is equal to this zombie's owner (similar to how we did in the `createRandomZombie` function).
 
  > Note: Again, because our answer-checker is primitive, it's expecting `msg.sender` to come first and will mark it wrong if you switch the order. But normally when you're coding, you can use whichever order you prefer — both are correct.
 
 3. We're going to need to get this zombie's DNA. So the next thing our function should do is declare a local `Zombie` named `myZombie` (which will be a `storage` pointer). Set this variable to be equal to index `_zombieId` in our `zombies` array.
 
-You should have 4 lines of code so far, including the line with the closing `}`. 
+You should have 4 lines of code so far, including the line with the closing `}`.
 
 We'll continue fleshing out this function in the next chapter!

@@ -56,6 +56,7 @@ material:
 Dans ce chapitre, nous allons apprendre les **_valeurs retournées_** des fonctions, ainsi que les modificateurs de fonction.
 
 ## Valeurs retournées
+
 Pour retourner une valeur à partir d'une fonction, cela ressemble à ça :
 
 ```
@@ -68,9 +69,9 @@ function sayHello() public returns (string) {
 
 En Solidity, une déclaration de fonction indique le type de la valeur retournée (dans ce cas `string`).
 
-## Modificateur de fonctions
+## Modificateurs de fonction
 
-La fonction ci-dessus ne change pas un état en Solidity - c.-à-d. elle ne change pas une valeur et n'écrit rien.
+La fonction ci-dessus ne modifie pas l'état en Solidity, c'est-à-dire qu'elle ne change pas de valeur et n'écrit rien dans la blockchain.
 
 Dans ce cas là, nous pouvons la déclarer comme une fonction **_view_** (vue), cela veut dire qu'elle va seulement voir des données sans les modifier :
 
@@ -84,13 +85,13 @@ function _multiply(uint a, uint b) private pure returns (uint) {
   return a * b;
 }
 ```
-Cette fonction ne lit aucune donnée du contrat - elle retourne une valeur qui dépend seulement de ses arguments. Dans ce cas là, nous déclarerons la fonction comme **_pure_**.
+Cette fonction ne retourne aucune donnée du contrat ; elle retourne uniquement une valeur qui dépend de ses arguments. Dans ce cas, nous déclarerons la fonction comme **_pure_**.
 
-> Remarque: Il peut être difficile de se rappeler quand marquer les fonctions comme étant pure/view. Heureusement, le compilateur Solidity est bon pour vous avertir quand vous devriez utiliser l'un de ces modificateurs.
+> Remarque: Il peut être difficile de se rappeler quand marquer les fonctions comme étant pure/view. Heureusement, le compilateur Solidity est bon pour vous avertir quand vous devriez utiliser l'un ou l'autre de ces modificateurs.
 
 # A votre tour
 
-Nous allons vouloir une fonction d'aide pour générer un nombre ADN aléatoire à partir d'un string.
+Nous allons vouloir une fonction d'aide pour générer un nombre ADN aléatoire à partir d'une chaîne de caractères.
 
 1. Créez une fonction `private` appelée `_generateRandomDna`. Elle prendra un paramètre nommé `_str` (un `string`), et retournera un `uint`.
 

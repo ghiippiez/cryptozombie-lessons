@@ -7,10 +7,12 @@ material:
     language: sol
     startingCode:
       "zombieattack.sol": |
+        pragma solidity ^0.4.19;
+        
         import "./zombiehelper.sol";
 
         contract ZombieBattle is ZombieHelper {
-          // Start here
+          // 在这里开始
         }
       "zombiehelper.sol": |
         pragma solidity ^0.4.19;
@@ -163,6 +165,7 @@ material:
 
         }
       "ownable.sol": |
+        pragma solidity ^0.4.19;
         /**
          * @title Ownable
          * @dev The Ownable contract has an owner address, and provides basic authorization control
@@ -203,6 +206,8 @@ material:
 
         }
     answer: >
+      pragma solidity ^0.4.19;
+
       import "./zombiehelper.sol";
 
       contract ZombieBattle is ZombieHelper {
@@ -244,27 +249,27 @@ uint random2 = uint(keccak256(now, msg.sender, randNonce)) % 100;
 
 ### 这个方法很容易被不诚实的节点攻击
 
-在以太坊上, 当你在和一个合约上调用函数的时候, 你会把它广播给一个节点或者在网络上的 **_transaction_** 节点们。 网络上的节点将收集很多事务, 试着成为第一个解决计算密集型数学问题的人，作为“工作证明”，然后将“工作证明”(Proof of Work, PoW)和事务一起作为一个 **_block_** 发布在网络上。
+在以太坊上, 当你在和一个合约上调用函数的时候, 你会把它广播给一个节点或者在网络上的 **_transaction_** 节点们。 网络上的节点将收集很多交易, 试着成为第一个解决计算密集型数学问题的人，作为“工作证明”，然后将“工作证明”(Proof of Work, PoW)和交易一起作为一个 **_block_** 发布在网络上。
 
-一旦一个节点解决了一个PoW, 其他节点就会停止尝试解决这个 PoW, 并验证其他节点的事务列表是有效的，然后接受这个节点转而尝试解决下一个节点。
+一旦一个节点解决了一个PoW, 其他节点就会停止尝试解决这个 PoW, 并验证其他节点的交易列表是有效的，然后接受这个节点转而尝试解决下一个节点。
 
 **这就让我们的随机数函数变得可利用了**
 
 我们假设我们有一个硬币翻转合约——正面你赢双倍钱，反面你输掉所有的钱。假如它使用上面的方法来决定是正面还是反面 (`random >= 50` 算正面, `random < 50` 算反面)。
 
-如果我正运行一个节点，我可以 **只对我自己的节点** 发布一个事务，且不分享它。 我可以运行硬币翻转方法来偷窥我的输赢 — 如果我输了，我就不把这个事务包含进我要解决的下一个区块中去。我可以一直运行这个方法，直到我赢得了硬币翻转并解决了下一个区块，然后获利。
+如果我正运行一个节点，我可以 **只对我自己的节点** 发布一个交易，且不分享它。 我可以运行硬币翻转方法来偷窥我的输赢 — 如果我输了，我就不把这个交易包含进我要解决的下一个区块中去。我可以一直运行这个方法，直到我赢得了硬币翻转并解决了下一个区块，然后获利。
 
 ## 所以我们该如何在以太坊上安全地生成随机数呢
 
-因为区块链的全部内容对所有参与者来说是透明的， 这就让这个问题变得很难，它的解决方法不在本课程讨论范围，你可以阅读 <a href="https://ethereum.stackexchange.com/questions/191/how-can-i-securely-generate-a-random-number-in-my-smart-contract" target=_new>this StackOverflow thread</a> 来获得一些主意。 一个方法是利用 **_oracle_** 来访问以太坊区块链之外的随机数函数。
+因为区块链的全部内容对所有参与者来说是透明的， 这就让这个问题变得很难，它的解决方法不在本课程讨论范围，你可以阅读 <a href="https://ethereum.stackexchange.com/questions/191/how-can-i-securely-generate-a-random-number-in-my-smart-contract" target=_new>这个 StackOverflow 上的讨论</a> 来获得一些主意。 一个方法是利用 **_oracle_** 来访问以太坊区块链之外的随机数函数。
 
 当然， 因为网络上成千上万的以太坊节点都在竞争解决下一个区块，我能成功解决下一个区块的几率非常之低。 这将花费我们巨大的计算资源来开发这个获利方法 — 但是如果奖励异常地高(比如我可以在硬币翻转函数中赢得 1个亿)， 那就很值得去攻击了。
 
 所以尽管这个方法在以太坊上不安全，在实际中，除非我们的随机函数有一大笔钱在上面，你游戏的用户一般是没有足够的资源去攻击的。
 
-因为在这个教程中，我们只是在编写一个简单的游戏来做演示，也没有真正的钱在里面，所以我们决定接受这个不足之处，使用这个简单的随机数生成函数。但是要记得它是不安全的。
+因为在这个教程中，我们只是在编写一个简单的游戏来做演示，也没有真正的钱在里面，所以我们决定接受这个不足之处，使用这个简单的随机数生成函数。但是要谨记它是不安全的。
 
-## 测试一把
+## 实战演习
 
 我们来实现一个随机数生成函数，好来计算战斗的结果。虽然这个函数一点儿也不安全。
 

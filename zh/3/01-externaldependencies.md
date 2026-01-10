@@ -28,12 +28,12 @@ material:
 
         contract ZombieFeeding is ZombieFactory {
 
-          // 1. Remove this:
+          // 1. 移除这一行:
           address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d;
-          // 2. Change this to just a declaration:
+          // 2. 只声明变量:
           KittyInterface kittyContract = KittyInterface(ckAddress);
 
-          // 3. Add setKittyContractAddress method here
+          // 3. 增加 setKittyContractAddress 方法
 
           function feedAndMultiply(uint _zombieId, uint _targetDna, string species) public {
             require(msg.sender == zombieToOwner[_zombieId]);
@@ -141,19 +141,19 @@ material:
       }
 ---
 
-到现在为止，我们讲的 Solidity 和其他语言没有质的区别，它长得也很像 JavaScript.
+到现在为止，我们讲的 Solidity 和其他语言没有质的区别，它长得也很像 JavaScript。
 
-但是，在有几点上以太坊上的 DApp 跟普通的应用程序有着天地之分。
+但是，在有几点以太坊上的 DApp 跟普通的应用程序有着天壤之别。
 
 第一个例子，在你把智能协议传上以太坊之后，它就变得**_不可更改_**, 这种永固性意味着你的代码永远不能被调整或更新。
 
-你编译的程序会一直，永久的，不可更改的，存在以太网上。也就是以为这一点，安全性是一个非常非常严重的事。如果你的智能协议有任何漏洞，即使你发现了也无法补救。你只能让你的用户们放弃这个智能协议，让后转移到一个新的修复后的合约上。
+你编译的程序会一直，永久的，不可更改的，存在以太坊上。这就是 Solidity 代码的安全性如此重要的一个原因。如果你的智能协议有任何漏洞，即使你发现了也无法补救。你只能让你的用户们放弃这个智能协议，然后转移到一个新的修复后的合约上。
 
-但这恰好也是智能合约的一大优势。 代码说明一切。 如果你去读智能合约的代码，并验证它，你会发现， 一旦函数被定义下来，每一次的运行，程序都会严格遵照函数中原有的代码逻辑一丝不苟地执行，完全不用担心函数被人篡改而得到意外的结果。
+但这恰好也是智能合约的一大优势。代码说明一切。如果你去读智能合约的代码，并验证它，你会发现，一旦函数被定义下来，每一次的运行，程序都会严格遵照函数中原有的代码逻辑一丝不苟地执行，完全不用担心函数被人篡改而得到意外的结果。
 
 ## 外部依赖关系
 
-在第2课中，我们将加密小猫（CryptoKitties）合约的地址硬编码到DApp中去了。有没有想过，如果加密小猫出了点问题，比方说，集体消失了会怎么样？
+在第2课中，我们将加密小猫（CryptoKitties）合约的地址硬编码到 DApp 中去了。有没有想过，如果加密小猫出了点问题，比方说，集体消失了会怎么样？
 虽然这种事情几乎不可能发生，但是，如果小猫没了，我们的 DApp 也会随之失效 -- 因为我们在 DApp 的代码中用“硬编码”的方式指定了加密小猫的地址，如果这个根据地址找不到小猫，我们的僵尸也就吃不到小猫了，而按照前面的描述，我们却没法修改合约去应付这个变化！
 
 因此，我们不能硬编码，而要采用“函数”，以便于 DApp 的关键部分可以以参数形式修改。
@@ -162,13 +162,13 @@ material:
 
 ## 实战演习
 
-请修改第2课的代码，使得可以通过程序更改CryptoKitties合约地址。
+请修改第2课的代码，使得可以通过程序更改 CryptoKitties 合约地址。
 
 1. 删除采用硬编码 方式的 `ckAddress` 代码行。
 
 2. 之前创建 `kittyContract` 变量的那行代码，修改为对 `kittyContract` 变量的声明 -- 暂时不给它指定具体的实例。
 
-3. 创建名为 `setKittyContractAddress` 的函数， 它带一个参数 `_address`（`address`类型）， 可见性设为`external`。 
+3. 创建名为 `setKittyContractAddress` 的函数， 它带一个参数 `_address`（`address`类型）， 可见性设为`external`。
 
 4. 在函数内部，添加一行代码，将 `kittyContract` 变量设置为返回值：`KittyInterface（_address）`。
 
